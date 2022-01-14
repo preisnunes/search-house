@@ -2,6 +2,7 @@ import requests;
 from bs4 import BeautifulSoup
 from models import House
 from app import db
+
 regions = [{
 	"id": 5,
 	"name": "leiria",

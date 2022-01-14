@@ -5,12 +5,14 @@ class Region(db.Model):
     __tablename__ = 'regions'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
+    external_id = db.Column(db.Integer, nullable=False)
     subregions = db.relationship('Subregion')
 
 class Subregion(db.Model):
     __tablename__ = 'subregions'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
+    external_id = db.Column(db.Integer, nullable=False)
     region_id = db.Column(db.Integer(), db.ForeignKey('regions.id'))
     cities = db.relationship('City')
 
@@ -18,6 +20,7 @@ class City(db.Model):
     __tablename__ = 'cities'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
+    external_id = db.Column(db.Integer, nullable=False)
     subregion_id = db.Column(db.Integer(), db.ForeignKey('subregions.id'))
     houses = db.relationship('House')
     
