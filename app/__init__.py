@@ -20,8 +20,11 @@ def create_app():
     
     from app.routes.regions import regions
     from app.routes.subregions import subregions
+    from app.routes.cities import cities
+    
     app.register_blueprint(regions, url_prefix='/')
     app.register_blueprint(subregions, url_prefix='/')
+    app.register_blueprint(cities, url_prefix='/')
 
     return app
 
