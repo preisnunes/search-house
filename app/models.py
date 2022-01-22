@@ -1,64 +1,54 @@
 from datetime import datetime
-from . import db
+from dataclasses import dataclass, field
+from typing import List
 
-class Region(db.Model):
-    __tablename__ = 'regions'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    external_id = db.Column(db.Integer, nullable=False)
-    subregions = db.relationship('Subregion')
+@dataclass
+class House:
+    id: int = field(init=False)
+    name: str = None
+    type_id: int = field(init=False)
+    city_id: int = field(init=False)
+    external_id: str = None
+    price: int = None
+    built_area: float = None
+    total_area: float = None
+    url: str = None
+    typology: str = None
+    created_on: datetime = None
+    updated_on: datetime = None
 
-class Subregion(db.Model):
-    __tablename__ = 'subregions'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    external_id = db.Column(db.Integer, nullable=False)
-    region_id = db.Column(db.Integer(), db.ForeignKey('regions.id'))
-    cities = db.relationship('City')
-
-class City(db.Model):
-    __tablename__ = 'cities'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    external_id = db.Column(db.Integer, nullable=False)
-    subregion_id = db.Column(db.Integer(), db.ForeignKey('subregions.id'))
-    houses = db.relationship('House')
-    
-class Type(db.Model):
-    __tablename__ = 'types'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    houses = db.relationship('House', backref='type')
-
-    def __init__(self, name):
-        self.name = name
-       
+@dataclass
+class Type:
+    id: int = field(init=False)
+    name: str = None
+    houses: List[House] = field(default_factory=list)
 
     def __repr__(self):
         return '<name {}>'.format(self.name)
 
+@dataclass
+class City:
+    id: int = field(init=False)
+    name: str = None
+    external_id: int = None
+    subregion_id: int = field(init=False)
+    houses: List[House] = field(default_factory=list)
 
-class House(db.Model):
-    __tablename__ = 'houses'
 
-    id = db.Column(db.Integer, primary_key=True)
-    external_id = db.Column(db.String(), nullable=False)
-    name = db.Column(db.String(), nullable=False)
-    price = db.Column(db.Integer, nullable=False)
-    built_area = db.Column(db.Float, nullable=False)
-    total_area = db.Column(db.Float)
-    typology = db.Column(db.String())
-    url = db.Column(db.String())
-    type_id = db.Column(db.Integer(), db.ForeignKey('types.id'))
-    city_id = db.Column(db.Integer(), db.ForeignKey('cities.id'))
-    created_on = db.Column(db.DateTime(), default=datetime.utcnow)
-    updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
+@dataclass
+class Subregion:
+    id: int = field(init=False)
+    name: str = None
+    external_id: int = None
+    region_id: int = field(init=False)
+    cities: List[City] = field(default_factory=list)
 
-    def __init__(self, name, price):
-        self.name = name
-        self.price = price
-       
+@dataclass
+class Region:
+    id: int = field(init=False)
+    name: str = None
+    external_id: int = None
+    subregions: List[Subregion] = field(default_factory=list)
 
     def __repr__(self):
         return '<id {} name {}>'.format(self.id, self.name)

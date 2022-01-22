@@ -1,7 +1,9 @@
 from flask import Blueprint, request
-from app import db
+from flask_sqlalchemy import SQLAlchemy
 from app.models import Subregion
 subregions = Blueprint('subregions', __name__)
+
+db = SQLAlchemy()
 
 @subregions.route("/subregion", methods=['POST'])
 def create_subregion():

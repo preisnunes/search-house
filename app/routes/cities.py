@@ -1,7 +1,9 @@
 from flask import Blueprint, request
-from app import db
+from flask_sqlalchemy import SQLAlchemy
 from app.models import City
 cities = Blueprint('cities', __name__)
+
+db = SQLAlchemy()
 
 @cities.route("/city", methods=['POST'])
 def create_city():
