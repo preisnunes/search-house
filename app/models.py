@@ -51,4 +51,8 @@ class Region:
     subregions: List[Subregion] = field(default_factory=list)
 
     def __repr__(self):
-        return '<id {} name {}>'.format(self.id, self.name)
+        return '<id {} name {} external_id {}>'.format(
+            self.id, 
+            self.name, 
+            self.external_id
+        )
