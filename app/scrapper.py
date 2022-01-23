@@ -38,9 +38,6 @@ def get_inside_area(html):
 def get_terraine_area(html):
 	return float(html.text.strip().replace(' ', '').replace('terreno', '').replace(',', '.')[:-2])
 
-
-
-print(urls)
 for url in urls:
 	page = requests.get(url)
 	soup = BeautifulSoup(page.content, 'html.parser')

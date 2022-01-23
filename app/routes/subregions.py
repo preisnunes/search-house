@@ -8,11 +8,13 @@ db = SQLAlchemy()
 @subregions.route("/subregion", methods=['POST'])
 def create_subregion():
     data = request.get_json()
+    print(data)
     subregion = Subregion(
         name=data['name'], 
         region_id=data['parent_id'], 
         external_id=data['external_id']
     )
+    print(subregion)
     db.session.add(subregion)
     db.session.commit()
     return f"Subregion {data['name']} added", 201

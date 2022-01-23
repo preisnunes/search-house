@@ -1,10 +1,11 @@
 import os
 import app.config as config
-from flask import Flask, request
+from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_crontab import Crontab
-
+from datetime import datetime
+from app.repositories.region import RegionRepository
 
 db = SQLAlchemy()
 crontab = Crontab()
@@ -33,6 +34,10 @@ def create_app():
     return app
 
 
-@crontab.job(minute='0', hour="6")
+@crontab.job()
 def scrapper_job():
-    pass
+    region_repository = RegionRepository(db.session)
+    region = region_repository.getRegionByName('Leiria')
+    file_object = open('cron_scrapper.txt', 'a')
+    file_object.write(f"Job runned at {datetime.now()} found region {region}\n")
+    file_object.close()

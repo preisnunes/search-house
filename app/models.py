@@ -31,7 +31,7 @@ class City:
     id: int = field(init=False)
     name: str = None
     external_id: int = None
-    subregion_id: int = field(init=False)
+    subregion_id: int = None
     houses: List[House] = field(default_factory=list)
 
 
@@ -40,7 +40,7 @@ class Subregion:
     id: int = field(init=False)
     name: str = None
     external_id: int = None
-    region_id: int = field(init=False)
+    region_id: int = None
     cities: List[City] = field(default_factory=list)
 
 @dataclass
