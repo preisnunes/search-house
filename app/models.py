@@ -12,7 +12,6 @@ class House:
     price: int = None
     built_area: float = None
     total_area: float = None
-    url: str = None
     typology: str = None
     created_on: datetime = None
     updated_on: datetime = None

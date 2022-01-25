@@ -1,4 +1,3 @@
-from re import I
 from app.models import Region
 
 class RegionRepository():

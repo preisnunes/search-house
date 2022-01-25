@@ -1,4 +1,4 @@
-from sqlalchemy import Table, MetaData, Column, Integer, String, Date, ForeignKey, Float
+from sqlalchemy import Table, MetaData, Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.orm import registry, relationship
 from datetime import datetime
 import app.models as models
@@ -47,16 +47,15 @@ houses_table = Table(
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column("name", String(255), nullable=False),
-    Column('external_id', Integer, nullable=False),
-    Column('price', Integer, nullable=False),
+    Column('external_id', String(255), nullable=False),
     Column('price', Float, nullable=False),
+    Column('built_area', Float, nullable=False),
     Column('total_area', Float),
     Column("typology", String(255)),
-    Column("url", String(255)),
     Column("type_id", ForeignKey("types.id")),
     Column("city_id", ForeignKey("cities.id")),
-    Column("created_on", Date, default=datetime.utcnow),
-    Column("updated_on", Date, default=datetime.utcnow)
+    Column("created_on", DateTime, default=datetime.utcnow),
+    Column("updated_on", DateTime, default=datetime.utcnow)
 )
 
 def start_mappers():
