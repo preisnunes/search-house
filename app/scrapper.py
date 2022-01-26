@@ -1,4 +1,3 @@
-from curses.ascii import isdigit
 import requests;
 from bs4 import BeautifulSoup
 from app.models import Region, Subregion, City, House
@@ -32,11 +31,26 @@ def get_inside_area(html):
 def get_terraine_area(html):
 	return float(html.text.strip().replace(' ', '').replace('terreno', '').replace(',', '.')[:-2])
 
-def fetch_house_from(city_id, url):
 
+def fetch_city_houses(city_id, url):
+	page = requests.get(url)
+	soup = BeautifulSoup(page.content, 'html.parser')
+
+	pager = soup.find("ul", {"class" :"pager"})
+	nb_pages = 1 if not pager else len(pager.find_all('li'))
+	city_houses = []
+	
+	for page_index in range(1, nb_pages + 1):
+		city_houses.append(fetch_houses_from_page(city_id, url, page_index))
+
+	return city_houses
+
+def fetch_houses_from_page(city_id, url, page_index):
+	url += f"&page={page_index}"
 	page = requests.get(url)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	houses = []
+	
 	for ad in soup.find_all('article'):
 		name = ad.find("span", class_="offer-item-title").text
 		price_text = ad.find("li", class_="offer-item-price").text

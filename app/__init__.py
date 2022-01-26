@@ -8,7 +8,7 @@ from flask_crontab import Crontab
 from datetime import datetime
 from app.repositories.region import RegionRepository
 from app.repositories.house import HouseRepository
-from app.scrapper import build_url, fetch_house_from
+from app.scrapper import build_url, fetch_city_houses
 
 db = SQLAlchemy()
 crontab = Crontab()
@@ -46,7 +46,7 @@ def scrapper_job():
     for subregion in region.subregions:
         for city in subregion.cities:
             url = build_url(region, subregion, city)
-            houses = fetch_house_from(city.id, url)
+            houses = fetch_city_houses(city.id, url)
             for house in houses:
                 house_repository.save(house)
             file_object.write(f"Job runned at {datetime.now()} found region and it will fetch houses from {url}\n")
