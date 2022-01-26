@@ -1,3 +1,4 @@
+from curses.ascii import isdigit
 import requests;
 from bs4 import BeautifulSoup
 from app.models import Region, Subregion, City, House
@@ -23,7 +24,7 @@ def build_url(region :Region, subregion :Subregion, city: City):
 	region_query_string = 'search=[region_id]=' + str(region.external_id)
 	subregion_query_string = 'search=[subregion_id]=' + str(subregion.external_id)
 	city_query_string = 'search=[city_id]=' + str(city.external_id)
-	return f"{base_url}/{city.name}-{subregion.name}/?{region_query_string}&{subregion_query_string}&{city_query_string}"
+	return f"{base_url}/{city.name.replace(' ', '-')}-{subregion.name.replace(' ', '-')}/?{region_query_string}&{subregion_query_string}&{city_query_string}"
 	
 def get_inside_area(html):
 	return float(html.text.strip().replace(' ', '').replace(',', '.')[:-2])
@@ -38,8 +39,14 @@ def fetch_house_from(city_id, url):
 	houses = []
 	for ad in soup.find_all('article'):
 		name = ad.find("span", class_="offer-item-title").text
-		price = ad.find("li", class_="offer-item-price").text
-		price = int(price.strip().replace(' ', '')[:-1])
+		price_text = ad.find("li", class_="offer-item-price").text
+		price_text = price_text.strip().replace(' ', '')[:-1]
+		price = None
+		try:
+			price = float(price_text)
+		except ValueError:
+			pass
+		
 		house = House(name=name, price=price)
 		house.city_id = city_id
 		areas_html = ad.find_all("li", class_="offer-item-area")

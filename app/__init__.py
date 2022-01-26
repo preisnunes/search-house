@@ -33,11 +33,11 @@ def create_app():
     app.register_blueprint(regions, url_prefix='/')
     app.register_blueprint(subregions, url_prefix='/')
     app.register_blueprint(cities, url_prefix='/')
-
+    
     return app
 
 
-@crontab.job()
+@crontab.job(minute=9)
 def scrapper_job():
     region_repository = RegionRepository(db.session)
     house_repository = HouseRepository(db.session)

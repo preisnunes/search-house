@@ -1,4 +1,4 @@
-from sqlalchemy import Table, MetaData, Column, Integer, String, DateTime, ForeignKey, Float
+from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.orm import registry, relationship
 from datetime import datetime
 import app.models as models
@@ -48,7 +48,7 @@ houses_table = Table(
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column("name", String(255), nullable=False),
     Column('external_id', String(255), nullable=False),
-    Column('price', Float, nullable=False),
+    Column('price', Float, nullable=True),
     Column('built_area', Float, nullable=False),
     Column('total_area', Float),
     Column("typology", String(255)),
