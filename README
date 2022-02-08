@@ -1,0 +1,13 @@
+Steps to setup the project:
+
+To initialize the database:
+
+flask db init
+
+To migrate: 
+
+flask db migrate
+
+To upgrade database:
+
+flask db upgrade

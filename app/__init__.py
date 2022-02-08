@@ -1,14 +1,13 @@
-import imp
 import os
 import app.config as config
+import pika
+import json
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_crontab import Crontab
-from datetime import datetime
 from app.repositories.region import RegionRepository
-from app.repositories.house import HouseRepository
-from app.scrapper import build_url, fetch_city_houses
+from app.models import Region, Subregion, City
 
 db = SQLAlchemy()
 crontab = Crontab()
@@ -36,18 +35,32 @@ def create_app():
     
     return app
 
+def build_url(region :Region, subregion :Subregion, city: City):
+	base_url = "https://www.imovirtual.com/comprar/moradia"
+	region_query_string = 'search=[region_id]=' + str(region.external_id)
+	subregion_query_string = 'search=[subregion_id]=' + str(subregion.external_id)
+	city_query_string = 'search=[city_id]=' + str(city.external_id)
+	return f"{base_url}/{city.name.replace(' ', '-')}-{subregion.name.replace(' ', '-')}/?{region_query_string}&{subregion_query_string}&{city_query_string}"
+
 
 @crontab.job(minute=9)
 def scrapper_job():
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue='region-leiria')
+    
     region_repository = RegionRepository(db.session)
-    house_repository = HouseRepository(db.session)
     region = region_repository.getRegionByName('Leiria')
-    file_object = open('cron_scrapper.txt', 'a')
+    
     for subregion in region.subregions:
         for city in subregion.cities:
             url = build_url(region, subregion, city)
-            houses = fetch_city_houses(city.id, url)
-            for house in houses:
-                house_repository.save(house)
-            file_object.write(f"Job runned at {datetime.now()} found region and it will fetch houses from {url}\n")
-    file_object.close()
+            channel.basic_publish(
+                exchange='',
+                routing_key='region-leiria',
+                body=json.dumps({
+                    'url': url,
+                    'city_id': city.id
+                })
+            )
+    connection.close()
