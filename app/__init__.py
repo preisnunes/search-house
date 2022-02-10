@@ -21,17 +21,18 @@ def create_app():
     Migrate(app, db)
     from app.orm import houses_table, regions_table, subregions_table, cities_table, types_table
     from app.orm import start_mappers
-
-
+    
     start_mappers()
     
     from app.routes.regions import regions
     from app.routes.subregions import subregions
     from app.routes.cities import cities
+    from app.routes.houses import houses
     
     app.register_blueprint(regions, url_prefix='/')
     app.register_blueprint(subregions, url_prefix='/')
     app.register_blueprint(cities, url_prefix='/')
+    app.register_blueprint(houses, url_prefix='/')
     
     return app
 
