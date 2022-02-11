@@ -9,6 +9,7 @@ from flask_crontab import Crontab
 from app.repositories.region import RegionRepository
 from app.models import Region, Subregion, City
 
+
 db = SQLAlchemy()
 crontab = Crontab()
 
@@ -22,8 +23,11 @@ def create_app():
     from app.orm import houses_table, regions_table, subregions_table, cities_table, types_table
     from app.orm import start_mappers
     
+
     start_mappers()
     
+    
+
     from app.routes.regions import regions
     from app.routes.subregions import subregions
     from app.routes.cities import cities

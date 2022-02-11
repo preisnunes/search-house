@@ -1,5 +1,6 @@
 import pika
 import requests
+import json
 from bs4 import BeautifulSoup
 
 def fetch_city_houses(city_id, url):
@@ -31,15 +32,18 @@ def fetch_houses_from_page(city_id, url, page_index):
 		except ValueError:
 			pass
 		
-		house = House(name=name, price=price)
-		house.city_id = city_id
+		house = {}
+		house['price'] = price
+		house['city_id'] = city_id
+		house['name'] = name
 		areas_html = ad.find_all("li", class_="offer-item-area")
 		inside_area = get_inside_area(areas_html[0])
-		house.built_area = inside_area
-		house.external_id = ad['data-item-id']
-		house.type_id = 2
+		house['built_area'] = inside_area
+		house['external_id'] = ad['data-item-id']
+		house['type_id'] = 2
+		house['typology'] = ''
 		if len(areas_html) == 2:
-			house.total_area = get_terraine_area(areas_html[1])
+			house['total_area'] = get_terraine_area(areas_html[1])
 		houses.append(house)
 	return houses
 
@@ -57,13 +61,18 @@ channel.queue_declare(queue='region-leiria', durable=False)
 
 print(' [*] Waiting for messages.')
 
-def fetch_city(ch, method, properties, body):
-    print(" [x] Received %s" % body)
-    event = body.decode()
-    print(event['url'])
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-
+def callback(ch, method, properties, body):
+	print(" [x] Received %s" % body)
+	event = json.loads(body.decode('utf-8'))
+	print(event)
+	houses = fetch_city_houses(event['city_id'], event['url'])
+	for house in houses:
+		response = requests.post('http://127.0.0.1:5000/house', json=house)
+		print(str(response.content))
+	ch.basic_ack(delivery_tag=method.delivery_tag)
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(queue='region-leiria', on_message_callback=fetch_city)
+channel.basic_consume(queue='region-leiria', on_message_callback=callback)
 channel.start_consuming()
+
+

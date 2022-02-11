@@ -11,3 +11,11 @@ flask db migrate
 To upgrade database:
 
 flask db upgrade
+
+Start rabitmq server:
+
+brew services start rabbitmq
+
+Check rabbitmq logs:
+
+http://localhost:15672/#/
