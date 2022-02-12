@@ -1,17 +1,13 @@
 from flask import current_app
 from flask import Blueprint, request
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Session
 from app.models import House
 from app.repositories.house import HouseRepository
 from sqlalchemy import create_engine
 houses = Blueprint('houses', __name__)
 
-db = SQLAlchemy()
-
 @houses.route("/house", methods=['POST'])
 def create_house():
-    
     engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
     data = request.get_json()
     with Session(engine) as session:

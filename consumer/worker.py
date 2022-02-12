@@ -69,6 +69,7 @@ def callback(ch, method, properties, body):
 	for house in houses:
 		response = requests.post('http://127.0.0.1:5000/house', json=house)
 		print(str(response.content))
+		print(int(response.status_code))
 	ch.basic_ack(delivery_tag=method.delivery_tag)
 
 channel.basic_qos(prefetch_count=1)
