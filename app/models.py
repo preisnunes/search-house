@@ -9,6 +9,7 @@ class House:
     type_id: int = field(init=False)
     city_id: int = field(init=False)
     external_id: str = None
+    url: str = None
     price: int = None
     built_area: float = None
     total_area: float = None

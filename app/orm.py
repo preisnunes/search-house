@@ -53,6 +53,7 @@ houses_table = Table(
     Column('built_area', Float, nullable=False),
     Column('total_area', Float),
     Column("typology", String(255)),
+    Column("url", String(255)),
     Column("type_id", ForeignKey("types.id")),
     Column("city_id", ForeignKey("cities.id")),
     Column("created_on", DateTime, default=datetime.utcnow),

@@ -24,6 +24,9 @@ def fetch_houses_from_page(city_id, url, page_index):
 	print(url)
 	for ad in soup.find_all('article'):
 		name = ad.find("span", class_="offer-item-title").text
+		header = ad.find("header", class_="offer-item-header")
+		title_url = header.find("h3").find("a")
+		url = title_url['href'].split('#')[0]
 		price_text = ad.find("li", class_="offer-item-price").text
 		price_text = price_text.strip().replace(' ', '')[:-1]
 		price = None
@@ -36,6 +39,7 @@ def fetch_houses_from_page(city_id, url, page_index):
 		house['price'] = price
 		house['city_id'] = city_id
 		house['name'] = name
+		house['url'] = url
 		areas_html = ad.find_all("li", class_="offer-item-area")
 		inside_area = get_inside_area(areas_html[0])
 		house['built_area'] = inside_area
@@ -75,6 +79,8 @@ def callback(ch, method, properties, body):
 		'ready_for_updates': True
 	})
 	ch.basic_ack(delivery_tag=method.delivery_tag)
+
+fetch_houses_from_page(2, 'https://www.imovirtual.com/comprar/moradia/almagreira-pombal/?search%5Bregion_id%5D=10&search%5Bsubregion_id%5D=146&search%5Bcity_id%5D=10501123', 1)
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue='region-leiria', on_message_callback=callback)
