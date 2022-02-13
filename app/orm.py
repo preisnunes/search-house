@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, Float
+from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, Float, Boolean
 from sqlalchemy.orm import registry, relationship
 from datetime import datetime
 import app.models as models
@@ -33,6 +33,7 @@ cities_table = Table(
     Column("name", String(255), nullable=False),
     Column('external_id', Integer, nullable=False),
     Column("subregion_id", ForeignKey("subregions.id")),
+    Column("ready_for_updates", Boolean, default=False)
 )
 
 types_table = Table(

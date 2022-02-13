@@ -31,6 +31,7 @@ class City:
     name: str = None
     external_id: int = None
     subregion_id: int = None
+    ready_for_updates: bool = False
     houses: List[House] = field(default_factory=list)
 
 
