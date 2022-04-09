@@ -80,8 +80,6 @@ def callback(ch, method, properties, body):
 	})
 	ch.basic_ack(delivery_tag=method.delivery_tag)
 
-fetch_houses_from_page(2, 'https://www.imovirtual.com/comprar/moradia/almagreira-pombal/?search%5Bregion_id%5D=10&search%5Bsubregion_id%5D=146&search%5Bcity_id%5D=10501123', 1)
-
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue='region-leiria', on_message_callback=callback)
 channel.start_consuming()
